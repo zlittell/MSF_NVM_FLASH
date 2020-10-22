@@ -1,6 +1,19 @@
+/**
+* @file MSF_NVM_FLASH_SAMD11.c
+* @brief FLASH R/W Library for SAMD11 internal Flash
+* @author Zack Littell
+* @company Mechanical Squid Factory
+* @project MSF_NVM_FLASH Library
+*/
+
 #include <sam.h>
 
-// eeprom_page_read
+/**
+	@brief Read Page
+	@details Reads a page from flash at specified memory address
+	@param Memory address to start read at
+	@param Pointer to array to store read data in
+*/
 void flash_page_read(uint16_t memAddr, uint32_t *readData)
 {
 	for(uint8_t i = 0; i < 16; i++)
@@ -9,8 +22,13 @@ void flash_page_read(uint16_t memAddr, uint32_t *readData)
 	}
 }
 
-// checks values to verify against actual memory locations
-// return 1 on failure and 0 on verification
+/**
+	@brief Write Verify
+	@details Verifies page of memory against array passed.
+	@param Memory address to start verify at
+	@param Data to compare memory to
+	@returns Success
+*/
 uint8_t flash_page_write_verify(uint16_t memAddr, uint32_t *dataToVerify)
 {
 	for (uint8_t i = 0; i < 16; i++)
@@ -24,10 +42,16 @@ uint8_t flash_page_write_verify(uint16_t memAddr, uint32_t *dataToVerify)
 	return 0;
 }
 
-// write 64bytes = 32bits * 16 bytes
+/**
+	@brief Write Page
+	@details Writes a page of data to flash at specified memory address
+	@param Memory address to start verify at
+	@param Pointer to array of data to write to flash
+	@returns success
+*/
 uint8_t flash_page_write(uint16_t memAddr, uint32_t *dataToWrite)
 {
-	volatile uint32_t *pagebuf;
+	volatile uint32_t *pagebuf = 0;
 	
 	// Copy data to write into page buffer at address 0x00
 	for (uint8_t i = 0; i < 16; i++)
@@ -53,6 +77,12 @@ uint8_t flash_page_write(uint16_t memAddr, uint32_t *dataToWrite)
 	return 1;
 }
 
+/**
+	@brief Erase Row
+	@details Erases an entire row so that it is ready to write
+	@param Address of the row to erase
+	@returns Success
+*/
 uint8_t flash_row_erase(uint16_t rowAddr)
 {
 	//Load address of row to erase
